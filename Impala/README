@@ -1,0 +1,28 @@
+1. Copy allCountries.zip, Weather.csv and scripts to CDH local system.
+
+2. Unzip allCountries.zip archive:
+	unzip allCountries.zip
+	
+3. Run commands to write data on HDFS:
+	hadoop fs -mkdir /user/cloudera/weather-analytics
+	hadoop fs -mkdir /user/cloudera/weather-analytics/input
+	hadoop fs -put allCountries.txt Weather.csv /user/cloudera/weather-analytics/input
+
+4. To create tables in the Impala:
+	impala-shell -f creating_static_tables.sql
+	
+5. Change access to HDFS folders for Impala:
+	sudo -u hdfs hadoop fs -chown -R impala:supergroup /user/hive/warehouse/weather_analytics.db/weather
+	sudo -u hdfs hadoop fs -chown -R impala:supergroup /user/hive/warehouse/weather_analytics.db/countries
+	
+6. Run commands:
+	impala-shell -f loading_static_data.sql
+	
+	impala-shell -f task1.sql
+	NOTE: The result of the operation will be stored in a unique_stations table.
+
+	impala-shell -f task2.sql
+	NOTE: The result of the operation will be stored in a weather_with_country table.
+	
+	impala-shell -f task3.sql
+	NOTE: Results of the operation will be stored in weather_analytics_by_date and weather_analytics_total tables.
