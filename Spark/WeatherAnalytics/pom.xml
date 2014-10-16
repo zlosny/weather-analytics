@@ -26,80 +26,44 @@
         </pluginManagement>
 
         <plugins>
+
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
-                <version>2.1</version>
+                <version>1.5</version>
+                <configuration>
+                    <shadedArtifactAttached>false</shadedArtifactAttached>
+                    <outputFile>/home/cloudera/IdeaProjects/WeatherAnalytics/target/WeatherAnalytics-1.1.jar</outputFile>
+                    <artifactSet>
+                        <includes>
+                            <include>*:*</include>
+                        </includes>
+                    </artifactSet>
+                    <filters>
+                        <filter>
+                            <artifact>*:*</artifact>
+                            <excludes>
+                                <exclude>META-INF/*.SF</exclude>
+                                <exclude>META-INF/*.DSA</exclude>
+                                <exclude>META-INF/*.RSA</exclude>
+                            </excludes>
+                        </filter>
+                    </filters>
+                </configuration>
                 <executions>
                     <execution>
-                        <phase>install</phase>
+                        <phase>package</phase>
                         <goals>
                             <goal>shade</goal>
                         </goals>
                         <configuration>
-                            <minimizeJar>false</minimizeJar>
-                            <createDependencyReducedPom>false</createDependencyReducedPom>
-                            <shadedArtifactAttached>true</shadedArtifactAttached>
-                            <shadedClassifierName>allinone</shadedClassifierName>
-                            <filters>
-                                <filter>
-                                    <artifact>*:*</artifact>
-                                    <excludes>
-                                        <exclude>META-INF/*.SF</exclude>
-                                        <exclude>META-INF/*.DSA</exclude>
-                                        <exclude>META-INF/*.RSA</exclude>
-                                    </excludes>
-                                </filter>
-                            </filters>
-                            <artifactSet>
-                                <includes>
-                                    <!-- Include here the dependencies you want to be packed in your fat jar -->
-                                    <include>org.apache.hadoop</include>
-                                    <include>org.apache.hbase</include>
-                                    <include>org.apache.spark</include>
-                                    <include>commons-logging</include>
-                                    <include>org.scala-lang</include>
-                                    <include>com.google.*</include>
-                                    <include>commons-collections</include>
-                                    <include>commons-lang</include>
-                                    <include>log4j</include>
-                                    <include>commons-configuration</include>
-                                    <include>org.slf4j</include>
-                                    <include>org.apache.zookeeper</include>
-                                    <include>org.cloudera.htrace</include>
-                                    <include>io.netty</include>
-                                    <include>org.spark-project.akka</include>
-                                    <include>org.apache.commons</include>
-                                    <include>com.typesafe</include>
-                                    <include>org.spark-project.protobuf</include>
-                                    <include>org.eclipse.jetty</include>
-                                    <include>javax.servlet</include>
-                                    <include>com.ning</include>
-                                    <include>com.codahale.metrics</include>
-                                    <include>com.fasterxml.jackson.core</include>
-                                    <include>org.json4s</include>
-                                    <include>org.eclipse.jetty.orbit</include>
-                                    <include>org.apache.kafka</include>
-                                    <include>com.esotericsoftware.reflectasm</include>
-                                    <include>com.101tec</include>
-                                    <include>com.clearspring.analytics</include>
-                                    <include>com.yammer.metrics</include>
-                                    <include>org.codehaus.jackson</include>
-                                    <include>org.codehaus.jackson</include>
-                                    <include>commons-codec</include>
-                                </includes>
-                            </artifactSet>
-
                             <transformers>
-                                <transformer
-                                        implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
+                                <transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer" />
+                                <transformer implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
                                     <resource>reference.conf</resource>
                                 </transformer>
-                                <transformer
-                                        implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-                                    <manifestEntries>
-                                        <Main-Class>akka.Main</Main-Class>
-                                    </manifestEntries>
+                                <transformer implementation="org.apache.maven.plugins.shade.resource.DontIncludeResourceTransformer">
+                                    <resource>log4j.properties</resource>
                                 </transformer>
                             </transformers>
                         </configuration>
@@ -128,53 +92,9 @@
                     </execution>
                 </executions>
             </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <phase>compile</phase>
-                        <goals>
-                            <goal>compile</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
+
         </plugins>
     </build>
-
-
-    <pluginRepositories>
-        <pluginRepository>
-            <id>scala-tools.org</id>
-            <name>Scala-tools Maven2 Repository</name>
-            <url>http://scala-tools.org/repo-releases</url>
-        </pluginRepository>
-    </pluginRepositories>
-
-    <repositories>
-        <repository>
-            <id>scala</id>
-            <name>Scala Tools</name>
-            <url>http://scala-tools.org/repo-releases/</url>
-            <releases>
-                <enabled>true</enabled>
-            </releases>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
-        </repository>
-
-        <repository>
-            <id>Akka repository</id>
-            <url>http://repo.akka.io/releases</url>
-        </repository>
-        <repository>
-            <id>cloudera-repo-releases</id>
-            <url>https://repository.cloudera.com/artifactory/repo/</url>
-        </repository>
-    </repositories>
-
 
     <dependencies>
         <dependency>
