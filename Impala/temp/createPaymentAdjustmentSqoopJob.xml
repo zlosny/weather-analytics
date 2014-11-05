@@ -1,0 +1,46 @@
+<workflow-app name="CreatePaymentAdjustmentSqoopJob" xmlns="uri:oozie:workflow:0.4">
+    <start to="createPaymentAdjustmentSqoopJob"/>
+
+    <action name="createPaymentAdjustmentSqoopJob">
+        <sqoop xmlns="uri:oozie:sqoop-action:0.2">
+            <job-tracker>${jobTracker}</job-tracker>
+            <name-node>${nameNode}</name-node>
+            <arg>job</arg>
+            <arg>--create</arg>
+            <arg>${jobName}</arg>
+            <arg>--</arg>
+            <arg>import</arg>
+            <arg>--connect</arg>
+            <arg>${database}</arg>
+            <arg>--username</arg>
+            <arg>${username}</arg>
+            <arg>--password-file</arg>
+            <arg>${passwordFile}</arg>
+            <arg>--table</arg>
+            <arg>${table}</arg>
+            <arg>--target-dir</arg>
+            <arg>${targetDir}/${date}</arg>
+            <arg>--split-by</arg>
+            <arg>${splitColumn}</arg>
+            <arg>--null-string</arg>
+            <arg>'\\N'</arg>
+            <arg>--null-non-string</arg>
+            <arg>'\\N'</arg>
+            <arg>--incremental</arg>
+            <arg>append</arg>
+            <arg>--check-column</arg>
+            <arg>${checkColumn}</arg>
+            <arg>--last-value</arg>
+            <arg>${lastValue}</arg>
+            <archive>${flowDir}/lib/mysql-connector-java-5.1.30.jar#mysql-connector-java-5.1.30.jar</archive>
+        </sqoop>
+        <ok to="end"/>
+        <error to="kill"/>
+    </action>     
+
+    <kill name="kill">
+         <message>Action failed, error message[${wf:errorMessage(wf:lastErrorNode())}]</message>      
+    </kill>
+
+    <end name="end"/>
+</workflow-app>
