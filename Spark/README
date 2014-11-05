@@ -1,0 +1,18 @@
+1. Copy allCountries.zip, Weather.csv to HDFS and WeatherAnalytics folder to CDH local system.
+
+2. Use the following Maven command to build the package:
+
+   mvn clean package
+
+3. Run jar-file from target folder:
+	1)	spark-submit \ 
+		--class WeatherAnalyticsJobRunner \
+		--master (local[n] or spark-port) 
+		/_path_to_jar-file_/weather-analytics-1.0-SNAPSHOT.jar \
+		/_path_to_Weather-file_/Weather.csv \ 
+		/_path_to_Countries-file_/allCountries.txt \ 
+		/_path_for_unique-stations_output_/
+		/_path_for_merged-data_output_/
+		/_path_for_all-time-analytics-data_output_/
+		/_path_for_day-analytics-data_output_/
+		
